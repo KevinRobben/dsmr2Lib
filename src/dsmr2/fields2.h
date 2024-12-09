@@ -89,10 +89,22 @@ struct TimestampField : StringField<T, 13, 13> { };
 // efficient integer value. The unit() and int_unit() methods on
 // FixedField return the corresponding units for these values.
 struct FixedValue {
-  operator float() { return val();}
-  float val() { return _value / 1000.0;}
-  uint32_t int_val() { return _value; }
+  // Default operator to return integer value
+  operator uint32_t() const { return _value; }
 
+  // Explicit method to return the float representation
+  float float_val() const { return _value / 1000.0; }
+
+  // Backward-compatible method for retrieving the integer value
+  uint32_t int_val() const { return _value; }
+
+  // Overload assignment operator for direct assignment
+  FixedValue& operator=(uint32_t value) {
+    _value = value;
+    return *this;
+  }
+
+  // keep _value public for backward compatibility
   uint32_t _value;
 };
 
